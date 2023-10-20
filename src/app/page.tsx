@@ -1,14 +1,9 @@
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 function Page() {
   return (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'flex-end',
-        padding: 12,
-      }}
-    >
+    <div>
+      <h1 className=" text-3xl text-red-600 ">HEllo</h1>
       <ConnectButton />
     </div>
   );
