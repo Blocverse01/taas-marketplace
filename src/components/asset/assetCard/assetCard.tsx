@@ -42,12 +42,12 @@ const AssetCard: FC<AssetCardProps> = ({ asset }) => {
       <div className="relative flex items-center justify-between">
         <div>
           <p className="text-[18px] font-medium"> {name}</p>
-          <p className="text-[12px] flex items-center space-x-1">
-            <Location /> {location}
+          <p className="text-[12px] flex  space-x-1">
+            <Location /> <span>{location}</span>
           </p>
         </div>
         <Link
-          className="px-5 py-3 rounded-lg btn"
+          className="px-5 py-3 text-sm rounded-lg btn"
           href={`/assetDetails/${asset.id}`}
         >
           Purchase

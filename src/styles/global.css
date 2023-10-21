@@ -22,7 +22,6 @@
     position: relative;
     overflow: hidden;
     background: transparent;
-    text-transform: uppercase;
     transition: all .25s;
 }
 
