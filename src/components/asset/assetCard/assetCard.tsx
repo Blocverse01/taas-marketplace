@@ -31,7 +31,7 @@ const AssetCard: FC<AssetCardProps> = ({ asset }) => {
   const { name, tokenPrice, location, displayImage, assetType, size } = asset;
 
   return (
-    <div className="flex flex-col  text-white px-6 py-6 hover:scale-105 duration-200   space-y-3 glass-card rounded-xl">
+    <div className="flex flex-col px-6 py-6 space-y-3 text-white duration-200 hover:scale-105 glass-card rounded-xl">
       <div className="relative w-full h-[280px] rounded-[4.404px]">
         <p className="absolute capitalize z-30 top-2 right-2 text-[12px] py-2 px-4 bg-t-purple text-white rounded-full ">
           {assetType}
@@ -39,7 +39,7 @@ const AssetCard: FC<AssetCardProps> = ({ asset }) => {
         <Image src={displayImage} alt="Asset Image" fill className="w-full " />
       </div>
 
-      <div className="flex justify-between items-center">
+      <div className="relative flex items-center justify-between">
         <div>
           <p className="text-[18px] font-medium"> {name}</p>
           <p className="text-[12px] flex items-center space-x-1">
@@ -47,17 +47,17 @@ const AssetCard: FC<AssetCardProps> = ({ asset }) => {
           </p>
         </div>
         <Link
-          className="bg-t-purple py-3 px-5 rounded-lg"
+          className="px-5 py-3 rounded-lg btn"
           href={`/assetDetails/${asset.id}`}
         >
           Purchase
         </Link>
       </div>
-      <div className="flex text-sm  justify-between">
+      <div className="flex justify-between text-sm">
         <p>Price per token</p>
         <p className="">${tokenPrice}</p>
       </div>
-      <div className="flex text-sm  justify-between">
+      <div className="flex justify-between text-sm">
         <p>Property Size</p>
         <p className="">{size} m2</p>
       </div>
