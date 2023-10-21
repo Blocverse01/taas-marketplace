@@ -27,9 +27,9 @@ const AssetDetail = () => {
   }
 
   return (
-    <div className="relative py-12 flex items-center justify-center  text-white  gradient-bg ">
+    <div className="relative flex items-center justify-center py-12 text-white gradient-bg ">
       <div className="inset-0 absolute -z-10 h-[100%] w-full  backdrop-blur-xl "></div>
-      <div className="glass-card flex items-center   space-x-32   w-fit rounded-lg  p-12">
+      <div className="flex items-center p-12 space-x-32 rounded-lg glass-card w-fit">
         <div className="w-[630px] flex flex-col space-y-4">
           <p className="text-[32px] font-medium"> {asset.name}</p>
           <p className="flex items-center space-x-2">
@@ -59,16 +59,14 @@ const AssetDetail = () => {
           <div className="flex flex-col space-y-2">
             <label htmlFor="">No of tokens</label>
             <input
-              className="border outline-none p-4 rounded-md text-black"
+              className="p-4 text-black border rounded-md outline-none"
               type="number"
               value={inputValue}
               onChange={handleInputChange}
             />
           </div>
           <p className="text-center">${product}</p>
-          <button className="bg-t-purple py-3 px-5 rounded-lg w-full">
-            Invest
-          </button>
+          <button className="w-full px-5 py-3 rounded-lg btn">Invest</button>
           <div className="flex flex-col space-y-3">
             <DocumentCard
               label={asset.documents[0].label}
