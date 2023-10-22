@@ -1,9 +1,10 @@
 "use client";
 import Image from "next/image";
-import React, { FC } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { Location } from "../../assets/icons";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import toast, { Toaster } from 'react-hot-toast';
 
 interface AssetDocument {
   id: string;
@@ -20,48 +21,78 @@ interface Asset {
   description: string;
   size: number;
   tokenPrice: number;
-  displayImage: string;
+  media: any;
   documents: AssetDocument[];
 }
 
 interface AssetCardProps {
   asset: Asset;
+  isConnected: boolean;
 }
-const AssetCard: FC<AssetCardProps> = ({ asset }) => {
-  const { name, tokenPrice, location, displayImage, assetType, size } = asset;
+const AssetCard: FC<AssetCardProps> = ({ asset, isConnected }) => {
+  const { name, tokenPrice, location, media, assetType, size } = asset;
+  const [isDisconnected, setIsDisconnected] = useState(false);
+  const notify = (id:any) => toast.error('Connect your wallet',{ id : id });
+
+  useEffect(() => {
+    // if(!isConnected){
+    //   alert('hi')
+    //   setIsDisconnected(true)
+    // }
+  },[isConnected]);
+
 
   return (
-    <div className="flex flex-col  text-white px-6 py-6 hover:scale-105 duration-200   space-y-3 glass-card rounded-xl">
-      <div className="relative w-full h-[280px] rounded-[4.404px]">
-        <p className="absolute capitalize z-30 top-2 right-2 text-[12px] py-2 px-4 bg-t-purple text-white rounded-full ">
-          {assetType}
-        </p>
-        <Image src={displayImage} alt="Asset Image" fill className="w-full " />
-      </div>
-
-      <div className="flex justify-between items-center">
-        <div>
-          <p className="text-[18px] font-medium"> {name}</p>
-          <p className="text-[12px] flex items-center space-x-1">
-            <Location /> {location}
+    <>
+       <Toaster />
+       <div className="flex flex-col  text-white px-6 py-6 hover:scale-105 duration-200   space-y-3 glass-card rounded-xl">
+        <div className="relative w-full h-[280px] rounded-[4.404px]">
+          <p className="absolute capitalize z-30 top-2 right-2 text-[12px] py-2 px-4 bg-t-purple text-white rounded-full ">
+            {assetType}
           </p>
+          <Image src={media[0].fileURI} alt="Asset Image" fill className="w-full " />
         </div>
-        <Link
-          className="bg-t-purple py-3 px-5 rounded-lg"
-          href={`/assetDetails/${asset.id}`}
-        >
-          Purchase
-        </Link>
+
+        <div className="flex justify-between items-center">
+          <div>
+            <p className="text-[18px] font-medium"> {name}</p>
+            <p className="text-[12px] flex items-center space-x-1">
+              <Location /> {location}
+            </p>
+          </div>
+          { isConnected ? 
+          (
+            <Link
+              className="bg-t-purple py-3 px-5 rounded-lg"
+              href={`/assetDetails/${asset.id}`}
+            >
+              Purchase
+            </Link>
+          ) : 
+          (
+            <>
+              <Link
+              href={'#'}
+                className="bg-t-purple py-3 px-5 rounded-lg"
+                onClick={() => notify(`${asset.id}`)}>
+                Purchase 
+              </Link>
+            </> 
+          )
+          }
+            
+        </div>
+        <div className="flex text-sm  justify-between">
+          <p>Price per token</p>
+          <p className="">${tokenPrice}</p>
+        </div>
+        <div className="flex text-sm  justify-between">
+          <p>Property Size</p>
+          <p className="">{size} m2</p>
+        </div>
       </div>
-      <div className="flex text-sm  justify-between">
-        <p>Price per token</p>
-        <p className="">${tokenPrice}</p>
-      </div>
-      <div className="flex text-sm  justify-between">
-        <p>Property Size</p>
-        <p className="">{size} m2</p>
-      </div>
-    </div>
+    </>
+     
   );
 };
 
