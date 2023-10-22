@@ -20,6 +20,7 @@ const Page = () => {
         const response = await axios.get('/api/property')
         setIsLoading(false);
         setAssets(response.data.data); 
+        console.log(response.data.data)
       } catch (error) {
         setIsLoading(false);
         console.error('Error fetching data:', error);

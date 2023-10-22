@@ -12,6 +12,7 @@ import { sendTransaction, prepareSendTransaction } from '@wagmi/core'
 import { parseEther } from 'viem'
 import { getAccount } from '@wagmi/core'
 import toast, { Toaster } from 'react-hot-toast';
+import { usePrepareContractWrite, usePrepareSendTransaction } from "wagmi";
  
 interface Asset{
   name: string;

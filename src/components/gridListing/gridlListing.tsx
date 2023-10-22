@@ -11,9 +11,9 @@ const GridListing = <T extends { id: string }>({
 }: Props<T>) => {
   return (
     <>
-      {items.length === 0 && (
+      {/* {items.length === 0 && (
         <div className="py-12 text-center">No items to display</div>
-      )}
+      )} */}
       <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-3 ">
         {items.map((item) => (
           <div className="self-start" key={item.id}>
