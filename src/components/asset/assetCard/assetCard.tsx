@@ -5,6 +5,7 @@ import { Location } from "../../assets/icons";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import toast, { Toaster } from 'react-hot-toast';
+import { useAccount } from "wagmi";
 
 interface AssetDocument {
   id: string;
@@ -27,20 +28,11 @@ interface Asset {
 
 interface AssetCardProps {
   asset: Asset;
-  isConnected: boolean;
 }
-const AssetCard: FC<AssetCardProps> = ({ asset, isConnected }) => {
+const AssetCard: FC<AssetCardProps> = ({ asset }) => {
   const { name, tokenPrice, location, media, assetType, size } = asset;
-  const [isDisconnected, setIsDisconnected] = useState(false);
   const notify = (id:any) => toast.error('Connect your wallet',{ id : id });
-
-  useEffect(() => {
-    // if(!isConnected){
-    //   alert('hi')
-    //   setIsDisconnected(true)
-    // }
-  },[isConnected]);
-
+  const {isConnected: connected } =   useAccount()
 
   return (
     <>
@@ -60,7 +52,7 @@ const AssetCard: FC<AssetCardProps> = ({ asset, isConnected }) => {
               <Location /> {location}
             </p>
           </div>
-          { isConnected ? 
+          { connected ? 
           (
             <Link
               className="bg-t-purple py-3 px-5 rounded-lg"

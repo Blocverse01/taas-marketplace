@@ -5,15 +5,14 @@ import { GridListing } from "../../gridListing";
 type AssetCardProps = ComponentProps<typeof AssetCard>;
 interface AssetOverviewProps {
   assets: Array<AssetCardProps["asset"]>;
-  isConnected: boolean;
 }
 
-const AssetOverview: FC<AssetOverviewProps> = ({ assets, isConnected }) => {
+const AssetOverview: FC<AssetOverviewProps> = ({ assets }) => {
   return (
     <div className="z-40">
       <GridListing<(typeof assets)[number]>
         items={assets}
-        renderItem={(item) => <AssetCard asset={item} isConnected={isConnected}/>}
+        renderItem={(item) => <AssetCard asset={item} />}
       />
     </div>
   );

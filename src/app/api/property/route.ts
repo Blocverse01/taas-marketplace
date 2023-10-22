@@ -5,7 +5,10 @@ import axios from 'axios';
 export async function GET() {
     try {
         
-        const projectId = "rec_ckatr0tbfjq4rurkd7tg";
+        if(!process.env.PROJECT_ID) return NextResponse.json({
+          message: 'Project ID IS MISSING.....',
+        });
+        const projectId = process.env.PROJECT_ID;
         const endPoint = `projects/${projectId}/assets`;
         const BACKEND_ENDPOINT = process.env.BACKEND_ENDPOINT;
         const requestData = {

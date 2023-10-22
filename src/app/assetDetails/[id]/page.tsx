@@ -1,12 +1,18 @@
 "use client";
 import { useParams } from "next/navigation";
-// import { AssetsDemoData } from "../../../components/asset/assetCard/assetDemoData";
 import Image from "next/image";
 import { Location } from "../../../components/assets/icons";
 import { useEffect, useState } from "react";
 import axios from 'axios';
 import { DocumentCard } from "../../../components/asset/documentCard";
-
+import { Formik } from 'formik';
+import * as Yup from 'yup';
+import {abi}  from "../../../abi/token"
+import { sendTransaction, prepareSendTransaction } from '@wagmi/core'
+import { parseEther } from 'viem'
+import { getAccount } from '@wagmi/core'
+import toast, { Toaster } from 'react-hot-toast';
+ 
 interface Asset{
   name: string;
   tokenAddress: string;
@@ -33,24 +39,37 @@ const AssetDetail = () => {
   const [inputValue, setInputValue] = useState(0);
   const [product, setProduct] = useState(0);
   const [asset, setAsset] = useState<Asset>();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingC, setIsLoadingC] = useState(true);
+
+  const account = getAccount()
+
+  console.log(account);
 
   const handleInputChange = (e: { target: { value: string } }) => {
     const value = parseInt(e.target.value, 10);
-    // Ensure the value is never below zero
-    setInputValue(Math.max(0, value));
+    if (isNaN(value)) {
+      setInputValue(0);
+    } else {
+      setInputValue(Math.max(0, value));
+    }
   };
+
+  const validationSchema = Yup.object().shape({
+    amount : Yup.number()
+      .required('Number of token is required')
+      .min(1, 'Number of token must be greater than or equal to 1')
+  });
 
   useEffect(() => {
       const fetchData = async () => {
         try {
           const response = await axios.get(`/api/property/singleProperty?id=${id}`)
+          setIsLoadingC(false);
+          console.log(response.data.data);
           setAsset(response.data.data);
-          setIsLoading(false);
-          
         } catch (error) {
           console.error('Error fetching data:', error);
-          setIsLoading(false);
+          setIsLoadingC(false);
         }
       }
       fetchData()
@@ -59,20 +78,42 @@ const AssetDetail = () => {
 
   }, [inputValue, asset?.tokenPrice]);
 
-  if(isLoading){
-    <div className="z-50 mb-8 px-20  flex items-center justify-center h-screen">
+
+  const handleTransaction = async (amount:any) => {
+    try {
+      // Send the transaction
+      const tokenAddress = asset?.tokenAddress;
+      const amountStr = amount.toString();
+      const { hash } = await sendTransaction({
+        account: account.address,
+        to: tokenAddress!.toString(),
+        value: parseEther(amountStr),
+      });
+      toast.success('Transaction Successful');
+    } catch (error) {
+      toast.error('Failed to send Transaction');
+      console.error('Error sending transaction:', error);
+    }
+  };
+
+  if(isLoadingC){
+    return <div className="z-50 mb-8 px-20  flex items-center justify-center h-screen">
       <h1 className="text-[24px] text-white">Loading....</h1>
     </div>
   }
 
   if (!asset || !asset.name) {
-    return <p>Asset not found</p>;
+    return <div className="z-50 mb-8 px-20  flex items-center justify-center h-screen">
+    <h1 className="text-[24px] text-white">Asset Not Found</h1>
+  </div>;
   }
 
   
   return (
     <>
+     <Toaster />
     {
+      
        <div className="relative py-12 flex items-center justify-center  text-white  gradient-bg ">
         <div className="inset-0 absolute -z-10 h-[100%] w-full  backdrop-blur-xl "></div>
         <div className="glass-card flex items-center   space-x-32   w-fit rounded-lg  p-12">
@@ -88,7 +129,7 @@ const AssetDetail = () => {
               <Image
                 src={asset.media[0].fileURI}
                 width={630}
-                height={484}
+                height={380}
                 alt="Asset Image"
                 className="rounded"
               />
@@ -102,19 +143,42 @@ const AssetDetail = () => {
               <p>Price per token</p>
               <p>${asset.tokenPrice}</p>
             </div>
-            <div className="flex flex-col space-y-2">
-              <label htmlFor="">No of tokens</label>
-              <input
-                className="border outline-none p-4 rounded-md text-black"
-                type="number"
-                value={inputValue}
-                onChange={handleInputChange}
-              />
-            </div>
-            <p className="text-center">${product}</p>
-            <button className="bg-t-purple py-3 px-5 rounded-lg w-full">
-              Invest
-            </button>
+            <Formik
+              initialValues={{ amount : 0 }}
+              validationSchema={validationSchema}
+              onSubmit={(values, { setSubmitting }) => {
+                handleTransaction(values.amount);
+              }}
+            >{({ 
+              values,
+              errors,
+              touched,
+              handleChange,
+              handleSubmit,
+              isSubmitting,
+              isValid }) => (
+              <form onSubmit={handleSubmit} >
+                <div className="flex flex-col space-y-4">
+                  <label htmlFor="">No of tokens</label>
+                  <input
+                    className="border outline-none p-4 rounded-md text-black"
+                    type="number"
+                    name="amount"
+                    value={values.amount}
+                    onChange={(e) => {
+                      handleChange(e)
+                      handleInputChange(e)
+                    }}
+                  />
+                 <p className="text-red-600"> {errors.amount && touched.amount && errors.amount? errors.amount : null}</p>
+                </div>
+                <p className="text-center pt-3 pb-3">${product}</p>
+                  <button  type="submit" className="bg-t-purple py-3 px-5 rounded-lg w-full" >
+                    Invest
+                  </button>
+                </form>
+              )}
+            </Formik>
             <div className="flex flex-col space-y-3">
               <DocumentCard
                 documentArray={asset.documents}
@@ -123,18 +187,6 @@ const AssetDetail = () => {
                 URI={asset.documents[0].fileURI}
                 propertyName={asset.name}
               />
-              {/* <DocumentCard
-                label={asset.documents[1].label}
-                fileSize={asset.documents[1].fileSize}
-                URI={asset.documents[1].fileURI}
-                propertyName={asset.name}
-              />
-              <DocumentCard
-                label={asset.documents[2].label}
-                fileSize={asset.documents[2].fileSize}
-                URI={asset.documents[2].fileURI}
-                propertyName={asset.name}
-              /> */}
             </div>
           </div>
         </div>

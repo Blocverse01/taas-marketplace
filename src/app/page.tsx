@@ -13,16 +13,16 @@ const Page = () => {
   const [assets, setAssets] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get('/api/property')
-        setAssets(response.data.data);
         setIsLoading(false);
-        
+        setAssets(response.data.data); 
       } catch (error) {
-        console.error('Error fetching data:', error);
         setIsLoading(false);
+        console.error('Error fetching data:', error);
       }
     }
     fetchData()
@@ -35,7 +35,7 @@ const Page = () => {
           <Image src={logo} alt="logo" />
           <h1 className="text-white"> TAAS Marketplace</h1>
         </div>
-        <ConnectButton.Custom>
+        {/* <ConnectButton.Custom>
       {({
         account,
         chain,
@@ -125,8 +125,8 @@ const Page = () => {
           </div>
         );
       }}
-    </ConnectButton.Custom>
-        {/* <ConnectButton /> */}
+    </ConnectButton.Custom> */}
+        <ConnectButton />
       </div>
 
       {
@@ -136,7 +136,7 @@ const Page = () => {
         </div>
         :
         <div className="z-50 mb-8 mt-10 px-20">
-          <AssetOverview assets={assets}  isConnected={isConnected}/>
+          <AssetOverview assets={assets}/>
         </div>
       }
 
